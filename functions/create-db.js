@@ -1,8 +1,8 @@
-import axios from "axios";
-import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+var axios = require("axios");
+var dotenv = require('dotenv') // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
-import { Client } from "@notionhq/client";
+const { Client } = require("@notionhq/client");
 
 const notion = new Client({ auth: "secret_oJzila85mbVRsWO2qBAzC3WmQdclR2PyYmvwzDVNyVE"})
 

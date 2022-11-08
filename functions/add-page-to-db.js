@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+var dotenv = require('dotenv') // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
-import { Client } from "@notionhq/client";
+const { Client } = require("@notionhq/client");
 
 const notion = new Client({ auth: process.env.NOTION_KEY})
 
@@ -100,11 +100,11 @@ async function addPage(text){
         },
       ]
     })
-    console.log(response)
+    return response
     console.log("Success! Entry added.")
   } catch (error) {
     console.error(error.body)
   }
 }
 
-addPage("Bug with Whiteboard Loading Quickly")
+module.exports = addPage
