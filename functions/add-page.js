@@ -5,7 +5,37 @@ const { Client } = require("@notionhq/client");
 
 const notion = new Client({ auth: process.env.NOTION_KEY})
 
-async function addPage(text){
+function createChildren(children){
+  var arr = []
+  for(let child of children){
+    let childObj = {
+      "object": "block",
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "text": {
+              "content": `[${child.author}] `
+            },
+            "annotations": {
+              'bold': true
+            }
+          },
+          {
+            "type": "text",
+            "text": {
+              "content": child.clean_content
+            }
+          }
+        ]
+      }
+    }
+    arr.push(childObj)
+  }
+  return arr
+}
+
+async function addPage(thread, messages){
   try {
     const response = await notion.pages.create({
       parent: { type: "database_id",
@@ -15,7 +45,7 @@ async function addPage(text){
           title:[
             {
               "text": {
-                "content": text
+                "content": thread.name
               }
             }
           ]
@@ -25,14 +55,14 @@ async function addPage(text){
             {
             type: "text",
             "text": {
-              content: "This is a placeholder description"
+              content: messages[0]['clean_content']
               }
             }
           ]
         },
         "Discord User": {
           "select": {
-            'name': "@finn123"
+            'name': messages[0]['author']
           }
         },
         "Status": {
@@ -50,55 +80,10 @@ async function addPage(text){
         },
 
         "Thread Link": {
-          "url": "https://en.wikipedia.org/wiki/Terrarium"
+          "url": thread.jump_url
         }
       },
-      children: [
-        {
-          "object": "block",
-          "type": "paragraph",
-          "paragraph": {
-            "rich_text": [
-              {
-                "text": {
-                  "content": "[Finn]"
-                },
-                "annotations": {
-                  'bold': true
-                }
-              },
-              {
-                "type": "text",
-                "text": {
-                  "content": "This is the first message from the discord!"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "object": "block",
-          "type": "paragraph",
-          "paragraph": {
-            "rich_text": [
-              {
-                "text": {
-                  "content": "[Finn]"
-                },
-                "annotations": {
-                  'bold': true
-                }
-              },
-              {
-                "type": "text",
-                "text": {
-                  "content": "This is the second message from the discord!"
-                }
-              }
-            ]
-          }
-        },
-      ]
+      children: createChildren(messages)
     })
     return response
     console.log("Success! Entry added.")

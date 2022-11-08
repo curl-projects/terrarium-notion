@@ -6,8 +6,7 @@ router.post('/create', async function(req, res, next) {
   console.log(req)
   const body = req.body
   console.log("BODY:", body)
-  // const pageResponse = await addPage("New! Bug with Whiteboard Loading Quickly")
-  const pageResponse = "hi"
+  const pageResponse = await addPage(body.thread, body.messages)
   res.send(pageResponse);
 });
 
