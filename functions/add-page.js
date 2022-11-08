@@ -35,11 +35,25 @@ function createChildren(children){
   return arr
 }
 
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+function createUniqueAuthors(messages){
+  const arr = []
+  const authors = messages.map(a => a.author)
+  const uniqueAuthors = authors.filter(onlyUnique)
+  for(let author of uniqueAuthors){
+    arr.push({ "name": author})
+  }
+  return arr
+}
+
 async function addPage(thread, messages){
   try {
     const response = await notion.pages.create({
       parent: { type: "database_id",
-                database_id: "d34c779a745f439aaa25b8792948dc82" },
+                database_id: "e75924ad813349bd8b123ea829c45756" },
       properties: {
         title: {
           title:[
@@ -60,10 +74,8 @@ async function addPage(thread, messages){
             }
           ]
         },
-        "Discord User": {
-          "select": {
-            'name': messages[0]['author']
-          }
+        "Discord Users": {
+          "multi_select": createUniqueAuthors(messages)
         },
         "Status": {
           'select': {

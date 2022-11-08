@@ -44,11 +44,11 @@ async function createDatabaseInPage(pageName){
       "created_time": {},
       "name": "Logged Time"
     },
-    "Discord User": {
-      "id": "discord_user",
-      "type": "select",
+    "Discord Users": {
+      "id": "discord_users",
+      "type": "multi_select",
       "name": "Discord User",
-      "select": {
+      "multi_select": {
         "options": []
       }
     },
