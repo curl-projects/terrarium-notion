@@ -105,15 +105,20 @@ async function createDatabase(pageId){
       }
     }
 
-    await axios.request(options)
-      .then(function(response){
-        if(!response.data.id){
+    const id = await axios.request(options)
+      .then(async function(response){
+        const id = await response.data.id
+        console.log("HELLO! ID", id)
+        console.log(response.data.id ? "YES!" : "NO!")
+        if(!id){
           throw new Error("AxiosRequestError")
         }
         else{
-          return response.data.id
+          console.log("HI!!! ")
+          return id
         }
       })
+    return id
 }
 
 // createDatabase("6d5908c6-cf0a-4ab1-92bc-3f94861b20fe")

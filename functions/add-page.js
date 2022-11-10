@@ -70,15 +70,17 @@ async function addPage(thread, messages){
     console.log("ANCHOR:", anchorId)
 
     // THEN CHECK IF THE DATABASE EXISTS (A DB CALLED 'SUPPORT TICKETS' THAT'S IN THE ANCHOR PAGE)
-    var databaseId = await checkForDatabase(anchorId) // throws a handled error if there are multiple databases
+    let databaseId = await checkForDatabase(anchorId) // throws a handled error if there are multiple databases
 
       // IF IT DOESN'T EXIST, CREATE IT AT THE TOP LEVEL IN THE ANCHOR PAGE
       console.log("DATABASE ID", databaseId)
       if(databaseId === undefined){
         executionTracker.createDatabase = true
         databaseId = await createDatabase(anchorId)
+        console.log("AFTER DATABASE ID INNER:", databaseId)
       }
 
+    console.log("AFTER DATABASE ID:", databaseId)
     // ADD SUPPORT TICKET PAGE TO THE DATABASE
     const response = await notion.pages.create({
       parent: { type: "database_id",
