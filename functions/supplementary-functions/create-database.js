@@ -4,27 +4,9 @@ dotenv.config()
 
 const { Client } = require("@notionhq/client");
 
-const notion = new Client({ auth: "secret_oJzila85mbVRsWO2qBAzC3WmQdclR2PyYmvwzDVNyVE"})
+const notion = new Client({ auth: process.env.NOTION_KEY})
 
-const databaseId = process.env.NOTION_DATABASE_ID
-
-async function searchPages(query){
-  const response = await notion.search({
-    query: query,
-    sort: {
-      direction: 'ascending',
-      timestamp: "last_edited_time"
-    },
-    filter: {
-      property: "object",
-      value: 'page'
-    }
-  });
-  return response
-}
-
-async function createDatabaseInPage(pageName){
-
+async function createDatabase(pageId){
   const dbProperties = {
     "Ticket Number": {
       "id": "fy:{",
@@ -90,12 +72,6 @@ async function createDatabaseInPage(pageName){
     }
   }
 
-  try{
-    const response = await searchPages(pageName)
-
-    const pageId = response['results'][0]['id']
-    console.log("PAGE ID:", pageId)
-
     const options = {
       method: "POST",
       url: "https://api.notion.com/v1/databases",
@@ -129,13 +105,16 @@ async function createDatabaseInPage(pageName){
       }
     }
 
-    axios.request(options)
+    await axios.request(options)
       .then(function(response){
-        console.log(response.data)
+        if(!response.data.id){
+          throw new Error("AxiosRequestError")
+        }
+        else{
+          return response.data.id
+        }
       })
-  } catch(error){
-    console.error(error.body)
-  }
 }
 
-createDatabaseInPage('Notion API Tests')
+// createDatabase("6d5908c6-cf0a-4ab1-92bc-3f94861b20fe")
+module.exports = createDatabase

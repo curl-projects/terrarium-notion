@@ -5,6 +5,12 @@ const { Client } = require("@notionhq/client");
 
 const notion = new Client({ auth: process.env.NOTION_KEY})
 
+const searchForAnchor = require("./supplementary-functions/find-anchor")
+const checkForDatabase = require("./supplementary-functions/check-for-database")
+const createDatabase = require("./supplementary-functions/create-database")
+
+
+// UTILITY FUNCTIONS FOR DATA MANIPULATION
 function createChildren(children){
   var arr = []
   for(let child of children){
@@ -49,11 +55,34 @@ function createUniqueAuthors(messages){
   return arr
 }
 
+
 async function addPage(thread, messages){
+  var executionTracker = {
+    createDatabase: false,
+  }
+
   try {
+    // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH (NOT IMPLEMENTED YET)
+
+    // THEN CHECK IF THE ANCHOR EXISTS (A PAGE CALLED "TERRARIUM")
+    const anchorId = await searchForAnchor() // throws a handled error if the anchor doesn't exist
+
+    console.log("ANCHOR:", anchorId)
+
+    // THEN CHECK IF THE DATABASE EXISTS (A DB CALLED 'SUPPORT TICKETS' THAT'S IN THE ANCHOR PAGE)
+    var databaseId = await checkForDatabase(anchorId) // throws a handled error if there are multiple databases
+
+      // IF IT DOESN'T EXIST, CREATE IT AT THE TOP LEVEL IN THE ANCHOR PAGE
+      console.log("DATABASE ID", databaseId)
+      if(databaseId === undefined){
+        executionTracker.createDatabase = true
+        databaseId = await createDatabase(anchorId)
+      }
+
+    // ADD SUPPORT TICKET PAGE TO THE DATABASE
     const response = await notion.pages.create({
       parent: { type: "database_id",
-                database_id: "e75924ad813349bd8b123ea829c45756" },
+                database_id: databaseId },
       properties: {
         title: {
           title:[
@@ -98,9 +127,9 @@ async function addPage(thread, messages){
       children: createChildren(messages)
     })
     return response
-    console.log("Success! Entry added.")
   } catch (error) {
-    console.error(error.body)
+    console.log("ERROR BODY:", error.message)
+    throw new Error('AddPageError', {cause: error})
   }
 }
 
