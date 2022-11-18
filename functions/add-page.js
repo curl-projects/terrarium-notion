@@ -3,36 +3,41 @@ dotenv.config()
 
 const { Client } = require("@notionhq/client");
 
-
+const checkNotionAuth = require("./auth-functions/check-notion-auth")
 const searchForAnchor = require("./notion-functions/find-anchor")
 const checkForDatabase = require("./notion-functions/check-for-database")
 const createDatabase = require("./notion-functions/create-database")
 
-async function addPage(thread, messages){
+async function addPage(thread, messages, guild, user){
   // Check if authorized and return Notion key
 
-  const notion = new Client({ auth: process.env.NOTION_KEY})
-
-  var executionTracker = {
-    createDatabase: false,
-  }
-
   try {
+    const notionAuth = await checkNotionAuth(guild, user)
+
+    console.log("NOTION AUTH", notionAuth)
+
+    const notion = new Client({ auth: notionAuth})
+
+    console.log("AFTER")
+    var executionTracker = {
+      createDatabase: false,
+    }
+
     // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH (NOT IMPLEMENTED YET)
 
     // THEN CHECK IF THE ANCHOR EXISTS (A PAGE CALLED "TERRARIUM")
-    const anchorId = await searchForAnchor() // throws a handled error if the anchor doesn't exist
+    const anchorId = await searchForAnchor(notion) // throws a handled error if the anchor doesn't exist
 
     console.log("ANCHOR:", anchorId)
 
     // THEN CHECK IF THE DATABASE EXISTS (A DB CALLED 'SUPPORT TICKETS' THAT'S IN THE ANCHOR PAGE)
-    let databaseId = await checkForDatabase(anchorId) // throws a handled error if there are multiple databases
+    let databaseId = await checkForDatabase(anchorId, notion) // throws a handled error if there are multiple databases
 
       // IF IT DOESN'T EXIST, CREATE IT AT THE TOP LEVEL IN THE ANCHOR PAGE
       console.log("DATABASE ID", databaseId)
       if(databaseId === undefined){
         executionTracker.createDatabase = true
-        databaseId = await createDatabase(anchorId)
+        databaseId = await createDatabase(anchorId, notionAuth)
         console.log("AFTER DATABASE ID INNER:", databaseId)
       }
 

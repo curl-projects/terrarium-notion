@@ -5,7 +5,7 @@ var addPage = require('../functions/add-page');
 router.post('/create', async function(req, res, next) {
   try{
     const body = req.body
-    const pageResponse = await addPage(body.thread, body.messages)
+    const pageResponse = await addPage(body.thread, body.messages, body.guild, body.user)
     res.status(200).json({executionTracker: pageResponse}).send()
   }
   catch(error){
@@ -19,6 +19,9 @@ router.post('/create', async function(req, res, next) {
     }
     else if(error.cause && error.cause.message === "AxiosRequestError"){
       res.status(400).json({message: "AxiosRequestError"}).send()
+    }
+    else if(error.cause && error.cause.message === "NotionAuthError"){
+      res.status(400).json({message: "NotionAuthError"}).send()
     }
     else if(error.message === "AddPageError"){
       console.error("Unidentified Add Page Error:", error.cause.message)

@@ -3,10 +3,10 @@ dotenv.config()
 
 const { Client } = require("@notionhq/client");
 
-const notion = new Client({ auth: process.env.NOTION_KEY})
 
 
-async function searchForAnchor(){
+async function searchForAnchor(notion){
+
   const response = await notion.search({
     query: "Terrarium",
     sort: {

@@ -2,11 +2,7 @@ var axios = require("axios");
 var dotenv = require('dotenv') // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
-const { Client } = require("@notionhq/client");
-
-const notion = new Client({ auth: process.env.NOTION_KEY})
-
-async function createDatabase(pageId){
+async function createDatabase(pageId, notionAuth){
   const dbProperties = {
     "Ticket Number": {
       "id": "fy:{",
@@ -78,7 +74,7 @@ async function createDatabase(pageId){
       headers: {
         accept: "application/json",
 
-        'Authorization': `Bearer secret_oJzila85mbVRsWO2qBAzC3WmQdclR2PyYmvwzDVNyVE`,
+        'Authorization': `Bearer ${notionAuth}`,
         'Notion-Version': "2022-06-28",
         'content-type': 'application/json'
       },
