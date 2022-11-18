@@ -3,60 +3,16 @@ dotenv.config()
 
 const { Client } = require("@notionhq/client");
 
-const notion = new Client({ auth: process.env.NOTION_KEY})
 
-const searchForAnchor = require("./supplementary-functions/find-anchor")
-const checkForDatabase = require("./supplementary-functions/check-for-database")
-const createDatabase = require("./supplementary-functions/create-database")
-
-
-// UTILITY FUNCTIONS FOR DATA MANIPULATION
-function createChildren(children){
-  var arr = []
-  for(let child of children){
-    let childObj = {
-      "object": "block",
-      "type": "paragraph",
-      "paragraph": {
-        "rich_text": [
-          {
-            "text": {
-              "content": `[${child.author}] `
-            },
-            "annotations": {
-              'bold': true
-            }
-          },
-          {
-            "type": "text",
-            "text": {
-              "content": child.clean_content
-            }
-          }
-        ]
-      }
-    }
-    arr.push(childObj)
-  }
-  return arr
-}
-
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
-function createUniqueAuthors(messages){
-  const arr = []
-  const authors = messages.map(a => a.author)
-  const uniqueAuthors = authors.filter(onlyUnique)
-  for(let author of uniqueAuthors){
-    arr.push({ "name": author})
-  }
-  return arr
-}
-
+const searchForAnchor = require("./notion-functions/find-anchor")
+const checkForDatabase = require("./notion-functions/check-for-database")
+const createDatabase = require("./notion-functions/create-database")
 
 async function addPage(thread, messages){
+  // Check if authorized and return Notion key
+
+  const notion = new Client({ auth: process.env.NOTION_KEY})
+
   var executionTracker = {
     createDatabase: false,
   }
@@ -128,11 +84,58 @@ async function addPage(thread, messages){
       },
       children: createChildren(messages)
     })
-    return response
+    return executionTracker
   } catch (error) {
     console.log("ERROR BODY:", error.message)
     throw new Error('AddPageError', {cause: error})
   }
 }
+
+
+// UTILITY FUNCTIONS FOR DATA MANIPULATION
+function createChildren(children){
+  var arr = []
+  for(let child of children){
+    let childObj = {
+      "object": "block",
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "text": {
+              "content": `[${child.author}] `
+            },
+            "annotations": {
+              'bold': true
+            }
+          },
+          {
+            "type": "text",
+            "text": {
+              "content": child.clean_content
+            }
+          }
+        ]
+      }
+    }
+    arr.push(childObj)
+  }
+  return arr
+}
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+function createUniqueAuthors(messages){
+  const arr = []
+  const authors = messages.map(a => a.author)
+  const uniqueAuthors = authors.filter(onlyUnique)
+  for(let author of uniqueAuthors){
+    arr.push({ "name": author})
+  }
+  return arr
+}
+
 
 module.exports = addPage

@@ -6,7 +6,7 @@ router.post('/create', async function(req, res, next) {
   try{
     const body = req.body
     const pageResponse = await addPage(body.thread, body.messages)
-    res.status(200).json({data: pageResponse}).send()
+    res.status(200).json({executionTracker: pageResponse}).send()
   }
   catch(error){
     console.log("ERROR MESSAGE", error.message)
