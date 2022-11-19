@@ -65,6 +65,12 @@ async function createDatabase(pageId, notionAuth){
       "type": "people",
       "people": {},
       'name': "Tagged Engineer"
+    },
+    "Thread Title": {
+      "id": "thread_title",
+      "type": "rich_text",
+      "rich_text": {},
+      "name": "Thread Title"
     }
   }
 

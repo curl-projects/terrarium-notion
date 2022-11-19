@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var addPage = require('../functions/add-page');
+var updatePage = require("../functions/update-page")
 
 router.post('/create', async function(req, res, next) {
   try{
@@ -33,5 +34,17 @@ router.post('/create', async function(req, res, next) {
   }
 });
 
+router.post('/update', async function(req, res, next) {
+  try{
+    const body = req.body
+    console.log("REQUEST BODY")
+    const pageResponse = await updatePage()
+    // res.status(200).json({executionTracker: pageResponse}).send()
+  }
+  catch(error){
+    console.log("ERROR MESSAGE", error.message)
+    console.log("ERROR CAUSE", error.cause.message)
+  }
+});
 
 module.exports = router;

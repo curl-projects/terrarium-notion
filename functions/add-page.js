@@ -51,7 +51,7 @@ async function addPage(thread, messages, guild, user){
           title:[
             {
               "text": {
-                "content": thread.name
+                "content": String(thread.id)
               }
             }
           ]
@@ -79,6 +79,17 @@ async function addPage(thread, messages, guild, user){
             {
               "object": "user",
               "id": "6724b297-5a0b-4f89-adc7-006da651ea11"
+            }
+          ]
+        },
+
+        "Thread Title": {
+          'rich_text': [
+            {
+            type: "text",
+            "text": {
+              content: thread.name
+              }
             }
           ]
         },
