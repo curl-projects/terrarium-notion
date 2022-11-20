@@ -38,12 +38,12 @@ router.post('/update', async function(req, res, next) {
   try{
     const body = req.body
     console.log("REQUEST BODY")
-    const pageResponse = await updatePage()
+    const pageResponse = await updatePage(body.threadId, body.author, body.content, body.guild)
     // res.status(200).json({executionTracker: pageResponse}).send()
   }
   catch(error){
     console.log("ERROR MESSAGE", error.message)
-    console.log("ERROR CAUSE", error.cause.message)
+    console.log("ERROR CAUSE", error.cause ? error.cause.message : "No Error Cause")
   }
 });
 

@@ -12,18 +12,16 @@ async function addPage(thread, messages, guild, user){
   // Check if authorized and return Notion key
 
   try {
+    // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH (NOT IMPLEMENTED YET)
     const notionAuth = await checkNotionAuth(guild, user)
 
     console.log("NOTION AUTH", notionAuth)
 
     const notion = new Client({ auth: notionAuth})
 
-    console.log("AFTER")
     var executionTracker = {
       createDatabase: false,
     }
-
-    // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH (NOT IMPLEMENTED YET)
 
     // THEN CHECK IF THE ANCHOR EXISTS (A PAGE CALLED "TERRARIUM")
     const anchorId = await searchForAnchor(notion) // throws a handled error if the anchor doesn't exist
