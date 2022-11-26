@@ -7,12 +7,12 @@ const checkNotionAuth = require("./auth-functions/check-notion-auth")
 const searchForAnchor = require("./notion-functions/find-anchor")
 const checkForDatabase = require("./notion-functions/check-for-database")
 const createDatabase = require("./notion-functions/create-database")
-
+const addThreadAndMessages = require("./prisma-functions/add-thread-and-messages")
 async function addPage(thread, messages, guild, user){
   // Check if authorized and return Notion key
 
   try {
-    // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH (NOT IMPLEMENTED YET)
+    // FIRST FIND THE USER WORKSPACE WE'RE WORKING WITH
     const notionAuth = await checkNotionAuth(guild, user)
 
     console.log("NOTION AUTH", notionAuth)
@@ -72,14 +72,14 @@ async function addPage(thread, messages, guild, user){
             'name': "Not Started"
           }
         },
-        "Tagged Engineer": {
-          "people": [
-            {
-              "object": "user",
-              "id": "6724b297-5a0b-4f89-adc7-006da651ea11"
-            }
-          ]
-        },
+        // "Tagged Engineer": {
+        //   "people": [
+        //     {
+        //       "object": "user",
+        //       "id": "6724b297-5a0b-4f89-adc7-006da651ea11"
+        //     }
+        //   ]
+        // },
 
         "Thread Title": {
           'rich_text': [
@@ -98,6 +98,8 @@ async function addPage(thread, messages, guild, user){
       },
       children: createChildren(messages)
     })
+
+    const dbThread = await addThreadAndMessages(thread, messages)
     return executionTracker
   } catch (error) {
     console.log("ERROR BODY:", error.message)

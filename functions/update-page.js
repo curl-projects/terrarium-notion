@@ -7,6 +7,7 @@ const checkForDatabase = require("./notion-functions/check-for-database")
 const searchForAnchor = require("./notion-functions/find-anchor")
 const queryDBForPage = require("./notion-functions/query-db-for-page")
 const updatePageBlock = require("./notion-functions/update-page-block")
+const addMessage = require("./prisma-functions/add-message")
 
 async function updatePage(threadId, author, content, guild){
   const notionAuth = await checkNotionUserlessAuth(guild)
@@ -25,6 +26,7 @@ async function updatePage(threadId, author, content, guild){
 
   // FIND PAGE ID
   // UPDATE PAGE
+  const dbMessage = await addMessage(threadId, author, content)
 
   console.log("PAGE BLOCK", pageBlock)
 }
