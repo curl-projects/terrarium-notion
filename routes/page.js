@@ -39,7 +39,7 @@ router.post('/update', async function(req, res, next) {
     const body = req.body
     console.log("REQUEST BODY")
     const pageResponse = await updatePage(body.threadId, body.author, body.content, body.guild)
-    // res.status(200).json({executionTracker: pageResponse}).send()
+    res.status(200).json({executionTracker: pageResponse}).send()
   }
   catch(error){
     console.log("ERROR MESSAGE", error.message)

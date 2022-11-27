@@ -1,13 +1,14 @@
-import { PrismaClient } from '@prisma/client'
+const { PrismaClient } = require("@prisma/client")
+
 const prisma = new PrismaClient()
 
 async function addMessage(threadId, author, content){
-  const message = await prisma.threadMessage.create({
+  const message = await prisma.discordMessage.create({
     data: {
       messageUser: author,
       messageContent: content,
-      thread: {
-        connect: { ticketNumber: threadId }
+      Thread: {
+        connect: { ticketNumber: String(threadId) }
       }
     }
   })

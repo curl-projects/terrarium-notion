@@ -1,23 +1,33 @@
-import { PrismaClient } from '@prisma/client'
+const { PrismaClient } = require("@prisma/client")
+
 const prisma = new PrismaClient()
-const dayjs = require('dayjs');
 
 async function addThreadAndMessages(thread, messages){
 
-  const messageSchema = messages.map(message => {
-                                                  messageUser: message.author,
-                                                  messageContent: message.clean_content,
+  const messageSchema = messages.map(function(message){
+                                                  return({
+                                                    messageUser: message.author,
+                                                    messageContent: message.clean_content
+                                                  })
                                                 })
-  const thread = await prisma.thread.create({
-    data: {
-      ticketNumber: thread.id,
+  const dbThread = await prisma.thread.upsert({
+    where: {
+      ticketNumber: String(thread.id)
+    },
+    create: {
+      ticketNumber: String(thread.id),
       threadName: thread.name,
-      createdTime: dayjs(),
+      createdTime: new Date().toISOString(),
       threadLink: thread.jump_url,
       bugOverview: messages[0]['clean_content'],
-      threadMessages: {
-        create: messageSchema
+      DiscordMessage: {
+        createMany: {
+          data: messageSchema
+        }
       }
+    },
+    update: {
+
     }
   })
 }

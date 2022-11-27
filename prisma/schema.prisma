@@ -73,16 +73,16 @@ model User {
 }
 
 model Thread {
-  ticketNumber  String          @id
-  threadName    String
-  createdTime   String
-  threadLink    String
-  bugOverview   String
-  ThreadMessage ThreadMessage[]
+  ticketNumber   String           @id
+  threadName     String
+  createdTime    String
+  threadLink     String
+  bugOverview    String
+  DiscordMessage DiscordMessage[]
 }
 
-model ThreadMessage {
-  id             String @id
+model DiscordMessage {
+  id             Int    @id @default(sequence())
   threadId       String
   messageUser    String
   messageContent String

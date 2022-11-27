@@ -40,6 +40,7 @@ async function addPage(thread, messages, guild, user){
       }
 
     console.log("AFTER DATABASE ID:", databaseId)
+
     // ADD SUPPORT TICKET PAGE TO THE DATABASE
     const response = await notion.pages.create({
       parent: { type: "database_id",
