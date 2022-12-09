@@ -4,7 +4,7 @@ dotenv.config()
 
 async function checkNotionAuth(guildName, discordUserName){
   try{
-  const url = "http://localhost:3000/discord/notion-auth"
+  const url = `${process.env.DOMAIN}discord/notion-auth`
   console.log("env", `${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`)
   const authToken = Buffer.from(
     `${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`

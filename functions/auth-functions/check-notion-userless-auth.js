@@ -4,7 +4,7 @@ dotenv.config()
 
 async function checkNotionUserlessAuth(guildName){
   try{
-  const url = "http://localhost:3000/discord/notion-userless-auth"
+  const url = `${process.env.DOMAIN}discord/notion-userless-auth`
   console.log("env", `${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`)
   const authToken = Buffer.from(
     `${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`

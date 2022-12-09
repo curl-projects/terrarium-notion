@@ -29,7 +29,7 @@ async function addPage(thread, messages, guild, user){
     console.log("ANCHOR:", anchorId)
 
     // THEN CHECK IF THE DATABASE EXISTS (A DB CALLED 'SUPPORT TICKETS' THAT'S IN THE ANCHOR PAGE)
-    let databaseId = await checkForDatabase(anchorId, notion) // throws a handled error if there are multiple databases
+    let databaseId = await checkForDatabase(anchorId, notion, "Support Tickets") // throws a handled error if there are multiple databases
 
       // IF IT DOESN'T EXIST, CREATE IT AT THE TOP LEVEL IN THE ANCHOR PAGE
       console.log("DATABASE ID", databaseId)

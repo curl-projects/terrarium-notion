@@ -16,7 +16,7 @@ async function updatePage(threadId, author, content, guild){
   const notion = new Client({ auth: String(notionAuth)})
 
   const anchorId = await searchForAnchor(notion)
-  const databaseId = await checkForDatabase(anchorId, notion)
+  const databaseId = await checkForDatabase(anchorId, notion, "Support Tickets")
 
   // FETCH PAGE ID FROM TITLE
   const pageId = await queryDBForPage(threadId, databaseId, notion)

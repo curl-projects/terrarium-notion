@@ -3,23 +3,23 @@ dotenv.config()
 
 const { Client } = require("@notionhq/client");
 
-async function checkForDatabase(anchorId, notion){
+async function checkForDatabase(anchorId, notion, dbTitle){
   const response = await notion.blocks.children.list({
     block_id: anchorId
   })
   if(response.results){
-    const child_databases = response.results.filter(el =>(el.type === 'child_database' && el.child_database.title === "Support Tickets"))
+    const child_databases = response.results.filter(el =>(el.type === 'child_database' && el.child_database.title === dbTitle))
     if(child_databases.length > 1){
-      console.error("Error -- multiple databases called 'Support Tickets' identified")
+      console.error(`Error -- multiple databases called ${dbTitle} identified`)
       throw new Error("MultipleDB")
 
     }
     else if(child_databases.length === 0){
-      console.log("No 'Support Ticket' database identified")
+      console.log(`No ${dbTitle} database identified`)
       return undefined
     }
     else{
-      console.log("Support Ticket database identifed:", child_databases[0]["id"])
+      console.log(`${dbTitle} database identifed:`, child_databases[0]["id"])
       return child_databases[0]['id']
     }
   }
